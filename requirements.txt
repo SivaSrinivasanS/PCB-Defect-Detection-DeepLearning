@@ -1,13 +1,13 @@
 streamlit==1.46.0
-tensorflow==2.16.1      # Confirmed working version on Streamlit Cloud
-numpy==1.26.4           # Compatible with TF 2.16.1
+tensorflow==2.10.0      # Compatible with Python 3.9 (chosen in Dockerfile)
+numpy==1.23.4           # Compatible with TensorFlow 2.10.0
 pandas==2.3.0
-Pillow==11.2.1          # Ensure Pillow is correct for image handling
+Pillow==11.2.1
 h5py==3.14.0
 SQLAlchemy==2.0.41
 scikit-learn==1.5.0
 scipy==1.13.1
 seaborn==0.13.2
 matplotlib==3.8.4
-opencv-python           # IMPORTANT: Only include if you use 'import cv2' in pcb_ui.py
-gdown==5.2.0            # For model download
+opencv-python           # IMPORTANT: Only include if your pcb_ui.py uses 'import cv2'
+gdown==5.2.0            # Used by pcb_ui.py to download model if not present from Dockerfile
