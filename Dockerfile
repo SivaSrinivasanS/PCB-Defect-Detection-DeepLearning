@@ -9,10 +9,6 @@ WORKDIR /app
 COPY requirements.txt ./
 
 # Install necessary system dependencies for various Python packages and file downloads.
-# - curl: Used for downloading the model file.
-# - build-essential: Needed for compiling some Python packages (e.g., related to SciPy/NumPy).
-# - libgl1-mesa-glx, libxext6, libsm6, libxrender1: Common graphical libraries needed by some
-#   data science/CV packages like OpenCV (if uncommented in requirements.txt).
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
@@ -21,10 +17,9 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxrender1 \
     git \
-    && rm -rf /var/lib/apt/lists/* # Clean up apt cache to keep the Docker image small
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies from requirements.txt
-# --no-cache-dir: Prevents pip from storing cached wheels, further reducing image size.
 RUN pip install --no-cache-dir -r requirements.txt
 
 # --- CRITICAL: DOWNLOAD PCB_CNN.H5 MODEL FROM GOOGLE DRIVE ---
@@ -35,8 +30,6 @@ ENV MODEL_FILE_ID "1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV"
 RUN mkdir -p models/
 
 # Use curl to download the model file.
-# -L: Follows HTTP redirects (Google Drive uses redirects for downloads).
-# -o models/pcb_cnn.h5: Specifies the output file path and name inside the container.
 # The URL pattern for direct Google Drive downloads: https://drive.google.com/uc?id=<FILE_ID>&export=download
 RUN curl -L -o models/pcb_cnn.h5 "https://drive.google.com/uc?id=${MODEL_FILE_ID}&export=download"
 
@@ -44,7 +37,6 @@ RUN curl -L -o models/pcb_cnn.h5 "https://drive.google.com/uc?id=${MODEL_FILE_ID
 RUN ls -lh models/
 
 # Copy the rest of your application code from your GitHub repository into the container.
-# This includes src/, assets/, .github/, docs/, testing/, etc.
 COPY . .
 
 # Expose the default port for Streamlit applications.
