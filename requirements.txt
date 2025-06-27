@@ -1,11 +1,13 @@
 streamlit==1.46.0
-tensorflow==2.10.0      # Pinned to a stable version for cloud compatibility
-numpy==1.23.4           # Compatible with TensorFlow 2.10.0
+tensorflow==2.15.0      # Compatible with your Python version
+numpy==1.26.4           # Compatible with TensorFlow 2.15.0
 pandas==2.3.0
-Pillow==11.2.1          # For image processing
-h5py==3.14.0            # Required by TensorFlow for .h5 model files
-SQLAlchemy==2.0.41      # For your database persistence
-scikit-learn==1.7.0     # Common ML utility, included if used
-scipy==1.15.3           # Dependency often required by numpy/scikit-learn
-seaborn==0.13.2         # For plotting, if used
-matplotlib==3.8.2       # Required by seaborn
+Pillow==11.2.1
+h5py==3.14.0
+SQLAlchemy==2.0.41
+scikit-learn==1.5.0     # Adjusted for compatibility
+scipy==1.13.1           # Adjusted for compatibility
+seaborn==0.13.2
+matplotlib==3.8.4       # Adjusted for compatibility
+
+opencv-python # Uncomment if used in pcb_ui.py
