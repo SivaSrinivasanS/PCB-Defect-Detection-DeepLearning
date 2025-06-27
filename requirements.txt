@@ -1,7 +1,4 @@
-# Final requirements.txt to fix the error cleanly
-# 1. Compatible with Python 3.13
-# 2. Adds missing SQLAlchemy package
-# 3. Uses tf-nightly for now to match Python 3.13 (until stable TF is released)
+# ✅ Minimal working requirements.txt (focused and correct)
 
 streamlit==1.46.0
 tf-nightly
@@ -11,10 +8,4 @@ pillow
 matplotlib
 scikit-learn
 sqlalchemy
-
-# Optional (based on logs):
-tensorboard-data-server
-keras-nightly
-tb-nightly
-
-# You can pin versions later if you want stability
+gdown  # <-- THIS fixes the "ModuleNotFoundError: No module named 'gdown'" seen in your latest error
