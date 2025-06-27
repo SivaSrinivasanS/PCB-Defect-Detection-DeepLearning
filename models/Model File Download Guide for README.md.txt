@@ -6,7 +6,7 @@ To ensure the application runs correctly and utilizes the pre-trained model for 
 Download the Model File:
 
 Navigate to the following Google Drive link:
-Download pcb_cnn.h5 Model from Google Drive
+https://drive.google.com/drive/folders/1buDeEMZ7XNS-GdCwCiRrJ0fR0SksA84V?usp=sharing
 
 Download the pcb_cnn.h5 file from this shared folder.
 
