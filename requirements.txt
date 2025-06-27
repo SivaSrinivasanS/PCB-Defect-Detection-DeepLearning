@@ -1,5 +1,5 @@
 streamlit==1.46.0
-tensorflow==2.10.0      # Compatible with Python 3.9
+tensorflow==2.15.0      # Compatible with Python 3.9 (chosen in Dockerfile)
 numpy==1.23.4           # Compatible with TensorFlow 2.10.0
 pandas==2.3.0
 Pillow==11.2.1
@@ -11,4 +11,4 @@ seaborn==0.13.2
 matplotlib==3.8.4
 
 opencv-python # Uncomment if used in pcb_ui.py
-gdown==5.2.0            # Used by pcb_ui.py (if you left the auto-download code)
+gdown==5.2.0 # No longer needed if Dockerfile handles download
