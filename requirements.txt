@@ -1,20 +1,20 @@
-# Emergency fix: Use tf-nightly to support Python 3.13
-# TensorFlow has not yet published official stable wheels for Python 3.13 (even for 2.15.0)
-# So we switch to tf-nightly which typically supports newer Python versions earlier
+# Final requirements.txt to fix the error cleanly
+# 1. Compatible with Python 3.13
+# 2. Adds missing SQLAlchemy package
+# 3. Uses tf-nightly for now to match Python 3.13 (until stable TF is released)
 
-# Updated requirements.txt
 streamlit==1.46.0
-tf-nightly  # replaces tensorflow==2.10.0 or 2.15.0 for Python 3.13 compatibility
+tf-nightly
 opencv-python
 numpy
 pillow
 matplotlib
 scikit-learn
+sqlalchemy
 
-# WARNING:
-# tf-nightly is a development build. Use for testing/development only.
-# For production, consider switching to Python 3.10 and sticking to a stable TensorFlow version
+# Optional (based on logs):
+tensorboard-data-server
+keras-nightly
+tb-nightly
 
-# After updating this file:
-# 1. Commit and push to GitHub
-# 2. Redeploy or restart the Streamlit app
+# You can pin versions later if you want stability
