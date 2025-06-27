@@ -1,6 +1,5 @@
-# Use a Python base image with a version known to be stable with TensorFlow 2.10.0.
-# Python 3.9 is a great choice for this.
-FROM python:3.9-slim-buster
+# Use a Python base image with the version Streamlit Cloud is using (Python 3.10.18 is closest stable)
+FROM python:3.10-slim-buster
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -29,8 +28,7 @@ ENV MODEL_FILE_ID "1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV"
 # Create the 'models' directory where the pcb_cnn.h5 file will reside.
 RUN mkdir -p models/
 
-# Use curl to download the model file.
-# The URL pattern for direct Google Drive downloads: https://drive.google.com/uc?id=<FILE_ID>&export=download
+# Use curl to download the model file directly from Google Drive
 RUN curl -L -o models/pcb_cnn.h5 "https://drive.google.com/uc?id=${MODEL_FILE_ID}&export=download"
 
 # Optional: List the contents of the models/ directory to confirm the download in the build logs.
