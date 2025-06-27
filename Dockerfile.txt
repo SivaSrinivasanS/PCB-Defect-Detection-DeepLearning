@@ -1,0 +1,55 @@
+# Use a base image with a compatible Python version (Python 3.9)
+# Python 3.9 is chosen for broad and stable TensorFlow compatibility.
+FROM python:3.9-slim-buster
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the requirements file into the working directory
+# This allows pip to install dependencies before copying the rest of the code
+COPY requirements.txt ./
+
+# Install necessary system dependencies:
+# - curl: for downloading files (specifically the model from Google Drive)
+# - build-essential: for compiling some Python packages if needed
+# - libgl1-mesa-glx, libxext6, libsm6, libxrender1: common dependencies for some ML/CV libraries like OpenCV
+# - git: needed if any pip packages depend on git repositories
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    libgl1-mesa-glx \
+    libxext6 \
+    libsm6 \
+    libxrender1 \
+    git \
+    && rm -rf /var/lib/apt/lists/* # Clean up apt cache to keep image size small
+
+# Install Python dependencies from requirements.txt
+# --no-cache-dir: Prevents pip from storing cache, reducing image size
+RUN pip install --no-cache-dir -r requirements.txt
+
+# --- DOWNLOAD PCB_CNN.H5 MODEL FROM GOOGLE DRIVE ---
+# Your extracted Google Drive File ID for pcb_cnn.h5
+ENV MODEL_FILE_ID "1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV"
+
+# Create the 'models' directory where the model will be stored
+RUN mkdir -p models/
+
+# Use curl to download the model file directly from Google Drive
+# -L: Follow redirects
+# -o models/pcb_cnn.h5: Save the downloaded file as pcb_cnn.h5 inside the models/ directory
+# The Google Drive direct download URL pattern: https://drive.google.com/uc?id=<FILE_ID>&export=download
+RUN curl -L -o models/pcb_cnn.h5 "https://drive.google.com/uc?id=${MODEL_FILE_ID}&export=download"
+
+# Optional: List the contents of the models/ directory to verify download during build logs
+RUN ls -lh models/
+
+# Copy the rest of your application code into the container
+# This copies all files and folders (src/, assets/, etc.) from your Git repo
+COPY . .
+
+# Expose the port that Streamlit runs on (default is 8501)
+EXPOSE 8501
+
+# Command to run your Streamlit application when the container starts
+CMD ["streamlit", "run", "src/pcb_ui.py"]
