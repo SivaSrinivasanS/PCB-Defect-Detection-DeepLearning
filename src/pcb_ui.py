@@ -3,8 +3,13 @@ import streamlit as st
 from PIL import Image
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras import preprocessing
 from datetime import datetime
+
+# TensorFlow/Keras imports
+from tensorflow.keras import preprocessing
+from tensorflow.keras.models import load_model
+
+# SQLAlchemy imports
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -75,7 +80,7 @@ Session = sessionmaker(bind=engine)
 
 # --- Model Loading and Prediction Function ---
 @st.cache_resource
-def load_model():
+def load_pcb_model():
     model_path = os.path.join(project_root_dir, 'models', 'pcb_cnn.h5')
     
     if not os.path.exists(model_path):
@@ -93,12 +98,12 @@ def load_model():
         return None
 
 # Load the model globally when the app starts
-classifier_model = load_model()
+classifier_model = load_pcb_model()
 
 # Prediction function with enhanced output
 def predict_class(image):
     if classifier_model is None:
-        return "Error: Prediction model not available.", 0.0 # Return error message and 0 confidence
+        return "Error: Prediction model not available.", 0.0
 
     img_h, img_w = 224, 224
 
@@ -111,17 +116,17 @@ def predict_class(image):
         class_names = ['Burnt', 'Cu pad Damaged', 'Non-Defective', 'Rust', 'Water Damaged']
 
         predictions = classifier_model.predict(test_image)
-        scores = tf.nn.softmax(predictions[0]).numpy() # Get probabilities and convert to NumPy array
+        scores = tf.nn.softmax(predictions[0]).numpy()
         
         predicted_class_index = np.argmax(scores)
         predicted_class = class_names[predicted_class_index]
-        confidence = scores[predicted_class_index] * 100 # Convert to percentage
+        confidence = scores[predicted_class_index] * 100
 
         return predicted_class, confidence
 
     except Exception as e:
         st.error(f"An error occurred during prediction preprocessing or model inference: {e}")
-        return "Error during prediction", 0.0 # Return error message and 0 confidence
+        return "Error during prediction", 0.0
 
 # --- Streamlit Main Application Logic ---
 def main():
@@ -164,7 +169,7 @@ def main():
 
                 try:
                     image = Image.open(file_uploaded)
-                    st.image(image, caption='Uploaded Image', use_container_width=True) # Corrected parameter
+                    st.image(image, caption='Uploaded Image', use_container_width=True)
                     
                     # Create a placeholder for "Classifying..." message
                     status_placeholder = st.empty()
