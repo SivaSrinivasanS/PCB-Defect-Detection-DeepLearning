@@ -1,14 +1,20 @@
-streamlit==1.46.0
-tensorflow==2.15.0      # Compatible with Python 3.9 (chosen in Dockerfile)
-numpy==1.23.4           # Compatible with TensorFlow 2.10.0
-pandas==2.3.0
-Pillow==11.2.1
-h5py==3.14.0
-SQLAlchemy==2.0.41
-scikit-learn==1.5.0
-scipy==1.13.1
-seaborn==0.13.2
-matplotlib==3.8.4
+# Emergency fix: Use tf-nightly to support Python 3.13
+# TensorFlow has not yet published official stable wheels for Python 3.13 (even for 2.15.0)
+# So we switch to tf-nightly which typically supports newer Python versions earlier
 
-opencv-python # Uncomment if used in pcb_ui.py
-gdown==5.2.0 # No longer needed if Dockerfile handles download
+# Updated requirements.txt
+streamlit==1.46.0
+tf-nightly  # replaces tensorflow==2.10.0 or 2.15.0 for Python 3.13 compatibility
+opencv-python
+numpy
+pillow
+matplotlib
+scikit-learn
+
+# WARNING:
+# tf-nightly is a development build. Use for testing/development only.
+# For production, consider switching to Python 3.10 and sticking to a stable TensorFlow version
+
+# After updating this file:
+# 1. Commit and push to GitHub
+# 2. Redeploy or restart the Streamlit app
