@@ -33,26 +33,20 @@ class UploadedImage(Base):
     image_path = Column(String)
 
 @st.experimental_singleton
-def load_and_prepare_model():
-    if not os.path.exists(MODEL_PATH):
-        st.warning("🔄 Model not found locally. Attempting to download from Google Drive...")
-        try:
-            gdown.download(id="1C3n4XFUsD6FiqcS79BA1pThGTcfEV0IG", output=MODEL_PATH, quiet=False, fuzzy=True)
-            st.success("✅ Model downloaded successfully.")
-        except Exception as e:
-            st.error(f"❌ Model download failed: {e}")
-            return None
+def initialize_database():
     try:
-        model = tf.keras.models.load_model(MODEL_PATH, compile=False)  # Avoid legacy optimizer loading
-        st.success("✅ Model loaded successfully!")
-        return model
-    except TypeError as e:
-        st.error(f"❌ Model load failed due to type error: {e}")
-        return None
+        Base.metadata.create_all(engine)
+        inspector = inspect(engine)
+        if 'uploaded_images' not in inspector.get_table_names():
+            st.warning("Table creation attempted, but not found. Check permissions or database path.")
+            return False
+        test_session = sessionmaker(bind=engine)()
+        test_session.execute(text("SELECT 1"))
+        test_session.close()
     except Exception as e:
-        st.error(f"❌ Unexpected error loading model: {e}")
-        return None
-
+        st.error(f"A critical error occurred during database setup: {e}.")
+        return False
+    return True
 
 if not initialize_database():
     st.stop()
@@ -92,17 +86,11 @@ def load_and_prepare_model():
             st.error(f"❌ Model download failed: {e}")
             return None
     try:
-        with h5py.File(MODEL_PATH, 'r') as f:
-            model_json = f.attrs.get('model_config')
-            if model_json is None:
-                st.error("❌ No model_config found in .h5 file.")
-                return None
-            model = model_from_json(model_json.decode('utf-8') if isinstance(model_json, bytes) else model_json)
-            model.load_weights(MODEL_PATH)
-        st.success("✅ Model loaded via model_from_json + weights.")
+        model = tf.keras.models.load_model(MODEL_PATH, compile=False)
+        st.success("✅ Model loaded successfully!")
         return model
     except Exception as e:
-        st.error(f"Error loading model manually: {e}")
+        st.error(f"❌ Unexpected error loading model: {e}")
         return None
 
 classifier_model = load_and_prepare_model()
