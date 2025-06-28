@@ -1,4 +1,16 @@
+# ✅ Minimal working requirements.txt (focused and correct)
+
 streamlit==1.46.0
+<<<<<<< HEAD
+tf-nightly
+opencv-python
+numpy
+pillow
+matplotlib
+scikit-learn
+sqlalchemy
+gdown  # <-- THIS fixes the "ModuleNotFoundError: No module named 'gdown'" seen in your latest error
+=======
 tensorflow==2.16.1      # Confirmed working version on Streamlit Cloud
 numpy==1.26.4           # Compatible with TF 2.16.1
 pandas==2.3.0
@@ -11,3 +23,4 @@ seaborn==0.13.2
 matplotlib==3.8.4
 opencv-python           # IMPORTANT: Only include if you use 'import cv2' in pcb_ui.py
 gdown==5.2.0            # For model download
+>>>>>>> parent of 4bdc044 (optimization)
