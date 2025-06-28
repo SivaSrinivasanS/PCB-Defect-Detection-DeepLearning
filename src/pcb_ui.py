@@ -33,20 +33,26 @@ class UploadedImage(Base):
     image_path = Column(String)
 
 @st.experimental_singleton
-def initialize_database():
+def load_and_prepare_model():
+    if not os.path.exists(MODEL_PATH):
+        st.warning("🔄 Model not found locally. Attempting to download from Google Drive...")
+        try:
+            gdown.download(id="1C3n4XFUsD6FiqcS79BA1pThGTcfEV0IG", output=MODEL_PATH, quiet=False, fuzzy=True)
+            st.success("✅ Model downloaded successfully.")
+        except Exception as e:
+            st.error(f"❌ Model download failed: {e}")
+            return None
     try:
-        Base.metadata.create_all(engine)
-        inspector = inspect(engine)
-        if 'uploaded_images' not in inspector.get_table_names():
-            st.warning("Table creation attempted, but not found. Check permissions or database path.")
-            return False
-        test_session = sessionmaker(bind=engine)()
-        test_session.execute(text("SELECT 1"))
-        test_session.close()
+        model = tf.keras.models.load_model(MODEL_PATH, compile=False)  # Avoid legacy optimizer loading
+        st.success("✅ Model loaded successfully!")
+        return model
+    except TypeError as e:
+        st.error(f"❌ Model load failed due to type error: {e}")
+        return None
     except Exception as e:
-        st.error(f"A critical error occurred during database setup: {e}.")
-        return False
-    return True
+        st.error(f"❌ Unexpected error loading model: {e}")
+        return None
+
 
 if not initialize_database():
     st.stop()
