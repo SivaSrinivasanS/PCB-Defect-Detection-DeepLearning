@@ -12,9 +12,11 @@ from PIL import Image
 import gdown
 import json
 
+st.set_page_config(page_title="PCB Defect Classifier", layout="centered")
+
 # --- Configuration Constants ---
-ADMIN_USERNAME = "TANSAM_TIDEL"
-ADMIN_PASSWORD = "TANSAM123"
+ADMIN_USERNAME = "PCB_project"
+ADMIN_PASSWORD = "PCB123"
 
 # --- Database Setup ---
 Base = declarative_base()
@@ -112,7 +114,7 @@ def predict_defect(image_data, model):
 
 # --- UI ---
 def main():
-    st.set_page_config(page_title="PCB Defect Classifier", layout="centered")
+    #st.set_page_config(page_title="PCB Defect Classifier", layout="centered")
     st.title("🔍 PCB Board Defect Classifier")
 
     if "admin_logged_in" not in st.session_state:
