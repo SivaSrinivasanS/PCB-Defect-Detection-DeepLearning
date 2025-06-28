@@ -33,7 +33,7 @@ def initialize_database():
         if 'uploaded_images' in inspector.get_table_names():
             st.success("✅ Table 'uploaded_images' found in database.")
         else:
-            st.warning(⚠️ Table creation attempted, but not found.")
+            st.warning("⚠️ Table creation attempted, but not found.")
         st.write(f"Using DB at: `{DATABASE_URL}`")
     except Exception as e:
         st.error(f"❌ DB initialization error: {e}")
