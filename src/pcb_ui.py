@@ -97,7 +97,7 @@ def load_and_prepare_model():
             if model_json is None:
                 st.error("❌ No model_config found in .h5 file.")
                 return None
-            model = model_from_json(model_json.decode('utf-8'))
+            model = model_from_json(model_json.decode('utf-8') if isinstance(model_json, bytes) else model_json)
             model.load_weights(MODEL_PATH)
         st.success("✅ Model loaded via model_from_json + weights.")
         return model
