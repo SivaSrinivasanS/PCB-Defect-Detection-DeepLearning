@@ -35,8 +35,8 @@ class UploadedImage(Base):
     datetime = Column(DateTime)
     image_path = Column(String) # Stores the full path to the saved image file
 
-# Use st.cache_resource to ensure database initialization runs only once
-@st.cache_resource
+# Use st.experimental_singleton (compatible with Streamlit 1.17.0)
+@st.experimental_singleton
 def initialize_database():
     print(f"\n--- DATABASE INITIALIZATION STARTED ---")
     print(f"Checking/Creating database at: {db_path}")
@@ -76,7 +76,8 @@ Session = sessionmaker(bind=engine)
 # --- Class Mapping Loading ---
 class_map_path = os.path.join(project_root_dir, 'class_map.json')
 
-@st.cache_resource
+# Use st.experimental_singleton (compatible with Streamlit 1.17.0)
+@st.experimental_singleton
 def load_class_map():
     try:
         if not os.path.exists(class_map_path):
@@ -102,7 +103,8 @@ if not CLASS_MAP:
 # --- Model Loading ---
 MODEL_PATH = os.path.join(project_root_dir, 'models', 'pcb_cnn.h5')
 
-@st.cache_resource
+# Use st.experimental_singleton (compatible with Streamlit 1.17.0)
+@st.experimental_singleton
 def load_and_prepare_model():
     model_dir = os.path.dirname(MODEL_PATH)
     if not os.path.exists(model_dir):
