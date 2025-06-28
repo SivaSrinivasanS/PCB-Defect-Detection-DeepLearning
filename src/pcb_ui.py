@@ -1,6 +1,6 @@
 import streamlit as st
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import model_from_json
 from tensorflow.keras.preprocessing import image as keras_image
 import numpy as np
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, inspect, text
@@ -11,6 +11,7 @@ import io
 from PIL import Image
 import gdown
 import json
+import h5py
 
 st.set_page_config(page_title="PCB Defect Classifier", layout="centered")
 
@@ -85,9 +86,17 @@ def load_and_prepare_model():
             st.error(f"❌ Model download failed: {e}")
             return None
     try:
-        return tf.keras.models.load_model(MODEL_PATH, compile=False)
+        with h5py.File(MODEL_PATH, 'r') as f:
+            model_json = f.attrs.get('model_config')
+            if model_json is None:
+                st.error("❌ No model_config found in .h5 file.")
+                return None
+            model = model_from_json(model_json.decode('utf-8'))
+            model.load_weights(MODEL_PATH)
+        st.success("✅ Model loaded via model_from_json + weights.")
+        return model
     except Exception as e:
-        st.error(f"Error loading model: {e}")
+        st.error(f"Error loading model manually: {e}")
         return None
 
 classifier_model = load_and_prepare_model()
