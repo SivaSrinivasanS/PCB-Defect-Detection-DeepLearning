@@ -147,7 +147,7 @@ def predict_defect(image_data, model):
         probabilities = tf.nn.softmax(prediction_raw).numpy()
         
         predicted_index = int(np.argmax(probabilities))
-        confidence = probabilities[predicted_index]
+        confidence = probabilities[predicted_index] # Use actual probability before rounding
 
         label = CLASS_MAP.get(str(predicted_index), f"Class {predicted_index} (Label Not Found)")
 
@@ -290,6 +290,3 @@ def main():
                 st.session_state["redirect"] = False
                 st.success("Logged out successfully!")
                 st.rerun()
-
-if __name__ == "__main__":
-    main()
