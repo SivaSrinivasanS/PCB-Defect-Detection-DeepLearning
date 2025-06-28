@@ -53,8 +53,7 @@ if not initialize_database():
 Session = sessionmaker(bind=engine)
 
 # --- Class Mapping ---
-class_map_path = os.path.join(current_dir, 'class_map.json')
-
+class_map_path = os.path.join(project_root_dir, 'class_map.json')
 
 @st.experimental_singleton
 def load_class_map():
@@ -101,9 +100,9 @@ def predict_defect(image_data, model):
         img = Image.open(io.BytesIO(image_data)).convert("RGB").resize((224, 224))
         img_array = keras_image.img_to_array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        probabilities = tf.nn.softmax(model.predict(img_array, verbose=0)[0]).numpy()
+        probabilities = model.predict(img_array, verbose=0)[0]
         predicted_index = int(np.argmax(probabilities))
-        confidence = probabilities[predicted_index]
+        confidence = float(probabilities[predicted_index])
         label = CLASS_MAP.get(str(predicted_index), f"Class {predicted_index} (Label Not Found)")
         return label, confidence
     except Exception as e:
@@ -145,7 +144,12 @@ def main():
                     result_label, confidence_score = predict_defect(image_data, classifier_model)
                     st.write(f"### 🧠 Predicted Class: **{result_label.upper()}**")
                     st.write(f"**Confidence Score**: `{confidence_score:.4f}`")
-                    st.success("✅ This PCB is Non-Defective!" if result_label == 'Non-Defective' else f"🔴 This PCB is DEFECTIVE: {result_label}")
+                    if result_label == 'Non-Defective':
+                        st.success("✅ This PCB is Non-Defective!")
+                    elif result_label.startswith("Error"):
+                        st.error("❌ Could not predict due to an error.")
+                    else:
+                        st.error(f"🔴 This PCB is DEFECTIVE: {result_label}")
                     try:
                         session = Session()
                         uploads_dir = os.path.join(project_root_dir, "uploads")
