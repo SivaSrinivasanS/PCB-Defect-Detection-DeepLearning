@@ -10,6 +10,16 @@ import os
 import io
 from PIL import Image
 import gdown
+import json
+
+# Load class mapping from file
+try:
+    with open("class_map.json", "r") as f:
+        CLASS_MAP = json.load(f)
+except Exception as e:
+    CLASS_MAP = {}
+    st.warning("Could not load class_map.json. Predictions may show index numbers instead of labels.")
+
 
 # --- DATABASE SETUP ---
 DATABASE_URL = "sqlite:///pcb_database.db"
@@ -67,17 +77,20 @@ def load_and_prepare_model():
     return model
 
 # --- PREDICTION FUNCTION ---
-def predict_defect(image_data, model, threshold=0.5):
+def predict_defect(image_data, model):
     try:
         img = Image.open(io.BytesIO(image_data)).convert("RGB").resize((224, 224))
         img_array = image.img_to_array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        prediction = model.predict(img_array)[0][0]
 
-        if prediction == 0.00:
-            return "Uncertain (Manual Review Suggested)", prediction
-        result = "Defective" if prediction > threshold else "Non-Defective"
-        return result, prediction
+        prediction = model.predict(img_array)[0]
+        predicted_index = int(np.argmax(prediction))
+        confidence = round(float(np.max(prediction)), 2)
+
+        label = CLASS_MAP.get(str(predicted_index), f"Class {predicted_index}")
+
+        return label, confidence
+
     except Exception as e:
         st.error(f"Prediction failed: {e}")
         return "Error", 0.0
@@ -106,7 +119,7 @@ def main():
         if model:
             st.info("⏳ Classifying...")
             result, confidence = predict_defect(image_data, model)
-            st.write(f"### 🧠 Prediction: **{result}**")
+            st.write(f"### 🧠 Predicted Class: **{result.upper()}**")
             st.write(f"**Confidence Score**: `{confidence:.4f}`")
 
             try:
