@@ -1,6 +1,7 @@
+# ✅ Cleaned and pinned versions for compatibility with TensorFlow 2.10 and Python 3.9
 streamlit==1.46.0
-tensorflow==2.10.0      # Stable, compatible with Python 3.9 (as enforced by Dockerfile)
-numpy==1.23.4           # Compatible with TensorFlow 2.10.0
+tensorflow==2.10.0
+numpy==1.23.4
 pandas==2.3.0
 Pillow==11.2.1
 h5py==3.14.0
@@ -9,4 +10,5 @@ scikit-learn==1.5.0
 scipy==1.13.1
 seaborn==0.13.2
 matplotlib==3.8.4
-opencv-python           # Include if your training or UI code directly uses 'import cv2'
+opencv-python==4.10.0.75  # You may pin a version known to work for you
+gdown==5.2.0

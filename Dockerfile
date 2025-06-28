@@ -1,11 +1,13 @@
-# Use Python 3.9, which has guaranteed compatibility with TensorFlow 2.10.0
+# ✅ Dockerfile for PCB Defect Classifier with Python 3.9 + TensorFlow 2.10
 FROM python:3.9-slim-buster
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy requirements.txt and install system dependencies first
+# Copy only requirements first to leverage Docker caching
 COPY requirements.txt ./
+
+# Install system dependencies and Python packages
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
@@ -14,29 +16,18 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxrender1 \
     git \
-    && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && pip install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies from requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Download model from Google Drive using gdown (already in requirements.txt)
+RUN mkdir -p models
+RUN python -m gdown.cli https://drive.google.com/uc?id=1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV -O models/pcb_cnn.h5 --fuzzy
 
-# --- CRITICAL: DOWNLOAD PCB_CNN.H5 MODEL FROM GOOGLE DRIVE ---
-# This environment variable holds the Google Drive File ID for direct download.
-ENV MODEL_FILE_ID "1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV"
-
-# Create the 'models' directory where the pcb_cnn.h5 file will reside.
-RUN mkdir -p models/
-
-# Use curl to download the model file directly from Google Drive
-RUN curl -L -o models/pcb_cnn.h5 "https://drive.google.com/uc?id=${MODEL_FILE_ID}&export=download"
-
-# Optional: List the contents of the models/ directory to confirm the download in the build logs.
-RUN ls -lh models/
-
-# Copy the rest of your application code
+# Copy rest of the codebase
 COPY . .
 
-# Expose the default port for Streamlit applications.
+# Streamlit runs on port 8501 by default
 EXPOSE 8501
 
-# The command that Streamlit Cloud will run to start your application.
+# Entry point for the application
 CMD ["streamlit", "run", "src/pcb_ui.py"]
