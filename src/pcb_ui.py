@@ -1,4 +1,4 @@
-# ✅ Cleaned and fixed version of `pcb_ui.py`
+# ✅ Cleaned and fixed version of pcb_ui.py
 import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -83,7 +83,6 @@ def predict_defect(image_data, model):
         img = Image.open(io.BytesIO(image_data)).convert("RGB").resize((224, 224))
         img_array = image.img_to_array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-
         prediction = model.predict(img_array)[0]
         predicted_index = int(np.argmax(prediction))
         confidence = round(float(np.max(prediction)), 2)
