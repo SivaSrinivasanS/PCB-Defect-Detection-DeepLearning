@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir -r requirements.txt
 
 # --- CRITICAL: DOWNLOAD PCB_CNN.H5 MODEL FROM GOOGLE DRIVE ---
-# This environment variable holds the Google Drive File ID for direct download.
-ENV MODEL_FILE_ID "1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV"
+# Updated: Environment variable now uses your new file ID
+ENV MODEL_FILE_ID "1pzSpYZgqHuDnVWt8u5j0vtUR_2UkXhyt"
 
 # Create the 'models' directory where the pcb_cnn.h5 file will reside.
 RUN mkdir -p models/

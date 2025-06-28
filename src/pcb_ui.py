@@ -80,7 +80,7 @@ def load_and_prepare_model():
     if not os.path.exists(MODEL_PATH):
         st.warning("🔄 Model not found locally. Attempting to download from Google Drive...")
         try:
-            gdown.download(id="1rLOP-q2c_cw0UraOXIUNeI5eKFIX3uFV", output=MODEL_PATH, quiet=False, fuzzy=True)
+            gdown.download(id="1pzSpYZgqHuDnVWt8u5j0vtUR_2UkXhyt", output=MODEL_PATH, quiet=False, fuzzy=True)
             st.success("✅ Model downloaded successfully.")
         except Exception as e:
             st.error(f"❌ Model download failed: {e}")
