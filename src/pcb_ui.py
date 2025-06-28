@@ -33,8 +33,6 @@ class UploadedImage(Base):
 
 @st.experimental_singleton
 def initialize_database():
-    print(f"\n--- DATABASE INITIALIZATION STARTED ---")
-    print(f"Checking/Creating database at: {db_path}")
     try:
         Base.metadata.create_all(engine)
         inspector = inspect(engine)
@@ -55,7 +53,8 @@ if not initialize_database():
 Session = sessionmaker(bind=engine)
 
 # --- Class Mapping ---
-class_map_path = os.path.join(project_root_dir, 'class_map.json')
+class_map_path = os.path.join(current_dir, 'class_map.json')
+
 
 @st.experimental_singleton
 def load_class_map():
@@ -78,7 +77,6 @@ MODEL_PATH = os.path.join(project_root_dir, 'models', 'pcb_cnn.h5')
 
 @st.experimental_singleton
 def load_and_prepare_model():
-    model_dir = os.path.dirname(MODEL_PATH)
     if not os.path.exists(MODEL_PATH):
         st.warning("🔄 Model not found locally. Attempting to download from Google Drive...")
         try:
@@ -88,7 +86,7 @@ def load_and_prepare_model():
             st.error(f"❌ Model download failed: {e}")
             return None
     try:
-        return tf.keras.models.load_model(MODEL_PATH)
+        return tf.keras.models.load_model(MODEL_PATH, compile=False)
     except Exception as e:
         st.error(f"Error loading model: {e}")
         return None
@@ -114,7 +112,6 @@ def predict_defect(image_data, model):
 
 # --- UI ---
 def main():
-    #st.set_page_config(page_title="PCB Defect Classifier", layout="centered")
     st.title("🔍 PCB Board Defect Classifier")
 
     if "admin_logged_in" not in st.session_state:
@@ -143,7 +140,7 @@ def main():
             uploaded_file = st.file_uploader("📤 Upload a PCB image", type=["jpg", "jpeg", "png"])
             if uploaded_file:
                 image_data = uploaded_file.read()
-                st.image(image_data, caption="Uploaded Image", use_container_width=True)
+                st.image(image_data, caption="Uploaded Image", width=600)
                 if classifier_model:
                     result_label, confidence_score = predict_defect(image_data, classifier_model)
                     st.write(f"### 🧠 Predicted Class: **{result_label.upper()}**")
