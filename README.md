@@ -107,7 +107,7 @@ Dataset Acquisition and Placement:
 The full dataset is NOT included in this repository due to its size, nor are any sample images.
 
 To test the Streamlit app or avoid retraining, download the pretrained model:
-🔗 **Pretrained Model (.h5)**: [Download pcb_cnn.h5 from Google Drive](https://drive.google.com/file/d/1pzSpYZgqHuDnVWt8u5j0vtUR_2UkXhyt/view?usp=sharing)
+🔗 **Pretrained Model (.h5)**: [Download pcb_cnn.h5 from Google Drive](https://drive.google.com/file/d/1C3n4XFUsD6FiqcS79BA1pThGTcfEV0IG/view?usp=sharing)
 
 Extract its contents and place it into a new folder named data/augmented_dataset/ within your cloned project directory. The final path should be your-repo-root/data/augmented_dataset/.
 

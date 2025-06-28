@@ -1,10 +1,10 @@
-# ✅ Use stable Python base
+# ✅ Use Python 3.9 base - stable with TF 2.10.0
 FROM python:3.9-slim-buster
 
-# ✅ Set work directory
+# ✅ Set working directory
 WORKDIR /app
 
-# ✅ System dependencies
+# ✅ Install system dependencies
 COPY requirements.txt ./
 RUN apt-get update && apt-get install -y \
     curl \
@@ -16,25 +16,25 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# ✅ Install Python packages
+# ✅ Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ✅ Set model ID for gdown
-ENV MODEL_FILE_ID=1pzSpYZgqHuDnVWt8u5j0vtUR_2UkXhyt
+# ✅ Set correct model ID (updated)
+ENV MODEL_FILE_ID=1C3n4XFUsD6FiqcS79BA1pThGTcfEV0IG
 
-# ✅ Create models directory and download model via gdown
-RUN mkdir -p models/ && \
-    pip install gdown && \
+# ✅ Create model directory and download model using gdown
+RUN pip install gdown && \
+    mkdir -p models && \
     gdown --id ${MODEL_FILE_ID} --output models/pcb_cnn.h5
 
-# ✅ List files for debug
+# ✅ Confirm model is present (for logs)
 RUN ls -lh models/
 
-# ✅ Copy rest of the code
+# ✅ Copy rest of your application code
 COPY . /app
 
-# ✅ Streamlit port
+# ✅ Expose default Streamlit port
 EXPOSE 8501
 
-# ✅ App startup command
+# ✅ Command to run Streamlit app
 CMD ["streamlit", "run", "src/pcb_ui.py"]
