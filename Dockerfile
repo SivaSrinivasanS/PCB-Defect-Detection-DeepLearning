@@ -1,5 +1,6 @@
 # ✅ Use Python 3.9 base - stable with TF 2.10.0
-FROM python:3.9-slim-buster
+FROM python:3.10-slim
+
 
 # ✅ Set working directory
 WORKDIR /app
