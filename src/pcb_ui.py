@@ -92,7 +92,7 @@ def main():
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
         if st.button("Login"):
-            if username == "admin" and password == "admin":
+            if username == "PCB_Project" and password == "PCB123":
                 st.success("✅ Admin logged in.")
             else:
                 st.error("❌ Invalid credentials.")
@@ -107,8 +107,9 @@ def main():
         if model:
             st.info("⏳ Classifying...")
             result, confidence = predict_defect(image_data, model)
-            st.write(f"### 🧠 Prediction: **{result}**")
-            st.write(f"**Confidence Score**: {confidence:.4f}")
+	    st.write(f"### 🧠 Prediction: **{result}**")
+            # st.write(f"**Confidence Score**: {confidence:.4f}")
+
 
             try:
                 session = Session()
