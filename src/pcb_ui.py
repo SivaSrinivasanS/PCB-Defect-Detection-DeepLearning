@@ -106,10 +106,9 @@ def main():
 
         if model:
             st.info("⏳ Classifying...")
-            #result, confidence = predict_defect(image_data, model)
-	    st.write(f"### 🧠 Prediction: **{result}**")
-            # st.write(f"**Confidence Score**: {confidence:.4f}")
-
+            result, _ = predict_defect(image_data, model)
+            st.write(f"### 🧠 Prediction: **{result}**")
+            # Confidence score hidden
 
             try:
                 session = Session()
